@@ -1,0 +1,13 @@
+// Admin pages
+export { default as AdminLogin } from './AdminLogin'
+export { default as Dashboard } from './Dashboard'
+export { default as UploadDBF } from './UploadDBF'
+export { default as ImportHistory } from './ImportHistory'
+export { default as Products } from './Products'
+export { default as PieceSearch } from './PieceSearch'
+export { default as PieceDetail } from './PieceDetail'
+export { default as Customers } from './Customers'
+export { default as CustomerDetail } from './CustomerDetail'
+export { default as Enquiries } from './Enquiries'
+export { default as EnquiryDetail } from './EnquiryDetail'
+export { default as WarrantyRulesAdmin } from './WarrantyRulesAdmin'
