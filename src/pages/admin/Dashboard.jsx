@@ -120,7 +120,7 @@ function Stat({ icon: Icon, label, value, tone = 'brand' }) {
     neutral: 'bg-surface-100 text-surface-700',
   }
   return (
-    <div className="rounded-2xl border border-surface-200/80 bg-white p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-glass-lg">
+    <div className="rounded-2xl border border-surface-200/80 bg-white p-5 shadow-card transition duration-200 hover:border-brand-200 hover:shadow-glass">
       <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${tones[tone]}`}><Icon className="h-5 w-5" /></div>
       <p className="mt-4 font-display text-3xl font-semibold text-surface-950">{value}</p>
       <p className="mt-1 text-sm text-surface-500">{label}</p>

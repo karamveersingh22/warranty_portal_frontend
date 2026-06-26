@@ -7,7 +7,7 @@ export default function ProductCard({ product }) {
 
   return (
     <Link to={`/customer/product/${product.piece}`}>
-      <div className="h-full rounded-2xl border border-surface-200/80 bg-white p-5 shadow-card transition hover:-translate-y-1 hover:shadow-glass-lg">
+      <div className="h-full rounded-2xl border border-surface-200/80 bg-white p-5 shadow-card transition duration-200 hover:border-brand-200 hover:shadow-glass">
         <div className="flex justify-between items-start mb-3">
           <div className="min-w-0">
             <h3 className="line-clamp-2 font-semibold text-surface-950">{product.item_name || 'Product'}</h3>

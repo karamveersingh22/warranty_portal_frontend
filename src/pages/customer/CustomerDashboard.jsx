@@ -116,7 +116,7 @@ function StatCard({ icon: Icon, label, value, tone }) {
   }
 
   return (
-    <div className="rounded-2xl border border-surface-200/80 bg-white p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-glass-lg">
+    <div className="rounded-2xl border border-surface-200/80 bg-white p-5 shadow-card transition duration-200 hover:border-brand-200 hover:shadow-glass">
       <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${tones[tone]}`}>
         <Icon className="h-5 w-5" />
       </div>

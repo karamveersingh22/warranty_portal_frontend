@@ -37,7 +37,7 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-8 sm:px-6 lg:grid-cols-2 lg:pt-16">
-        <div className="animate-slide-up">
+        <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-accent-200 bg-accent-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent-700">
             <Sparkles className="h-3.5 w-3.5" />
             Safrina Warranty Portal
@@ -81,9 +81,8 @@ export default function Landing() {
         </div>
 
         {/* Hero visual */}
-        <div className="relative animate-scale-in">
-          <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-gradient-brand opacity-10 blur-2xl" />
-          <div className="overflow-hidden rounded-3xl border border-white/60 bg-white/80 p-8 shadow-glass-lg backdrop-blur">
+        <div className="relative">
+          <div className="overflow-hidden rounded-2xl border border-surface-200/80 bg-white p-8 shadow-glass">
             <div className="flex items-center justify-between">
               <Brand showTagline={false} size="sm" />
               <span className="badge-success">Active</span>
@@ -126,7 +125,7 @@ export default function Landing() {
           {FEATURES.map(({ icon: Icon, title, text }) => (
             <div
               key={title}
-              className="rounded-2xl border border-surface-200/80 bg-white p-6 shadow-card transition hover:-translate-y-1 hover:shadow-glass-lg"
+              className="rounded-2xl border border-surface-200/80 bg-white p-6 shadow-card transition duration-200 hover:border-brand-200 hover:shadow-glass"
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
                 <Icon className="h-6 w-6" />
