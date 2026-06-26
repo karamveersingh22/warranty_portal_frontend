@@ -41,7 +41,7 @@ export default function WarrantyRules() {
       <div className="border-b border-surface-200 pb-5">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Customer</p>
         <h1 className="mt-2 text-3xl font-bold text-surface-950">Warranty Rules</h1>
-        <p className="mt-1 text-sm text-surface-500">Active category rules and customer-visible coverage notes.</p>
+        <p className="mt-1 text-sm text-surface-500">Active category rules and warranty terms.</p>
       </div>
 
       {rules.length ? (
@@ -61,17 +61,17 @@ export default function WarrantyRules() {
                     <span className="badge-success">Active</span>
                   </div>
 
-                  {rule.messages && (
-                    <div className="mt-5 space-y-3">
-                      {Object.entries(rule.messages).map(([key, message]) => (
-                        <div key={key} className="rounded-lg bg-surface-50 p-3">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-success-600" />
-                            <p className="text-sm font-semibold capitalize text-surface-900">{key.replaceAll('_', ' ')}</p>
-                          </div>
-                          <p className="mt-1 text-sm text-surface-600">{message || 'N/A'}</p>
-                        </div>
-                      ))}
+                  {rule.terms && rule.terms.length > 0 && (
+                    <div className="mt-5 space-y-2">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-surface-500">Warranty Terms</p>
+                      <ol className="space-y-2">
+                        {rule.terms.map((term, index) => (
+                          <li key={index} className="flex items-start gap-2 rounded-lg bg-surface-50 p-3">
+                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success-600" />
+                            <span className="text-sm text-surface-800">{term}</span>
+                          </li>
+                        ))}
+                      </ol>
                     </div>
                   )}
                 </div>

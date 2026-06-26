@@ -4,38 +4,30 @@ import { Edit2, Loader2, Plus, RotateCcw, ShieldCheck, Trash2, X } from 'lucide-
 import api from '../../api/axios'
 import StatusBadge from '../../components/StatusBadge'
 
-const MESSAGE_FIELDS = [
-  ['manufacturing_defect', 'Manufacturing defect'],
-  ['hardness_issue', 'Hardness issue'],
-  ['damage', 'Damage'],
-  ['exchange', 'Exchange'],
-  ['other', 'Other'],
-]
-
-function emptyMessages() {
-  return MESSAGE_FIELDS.reduce((messages, [key]) => ({ ...messages, [key]: '' }), {})
-}
+const MAX_TERMS = 15
 
 function emptyForm() {
   return {
     category: '',
     warranty_months: '',
     is_active: true,
-    messages: emptyMessages(),
+    terms: [''],
   }
 }
 
 function normalizeRuleForForm(rule) {
+  const terms = rule.terms && rule.terms.length > 0 ? [...rule.terms] : ['']
   return {
     category: rule.category || '',
     warranty_months: rule.warranty_months ? String(rule.warranty_months) : '',
     is_active: rule.is_active !== false,
-    messages: { ...emptyMessages(), ...(rule.messages || {}) },
+    terms,
   }
 }
 
 export default function WarrantyRulesAdmin() {
   const [rules, setRules] = useState([])
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [formOpen, setFormOpen] = useState(false)
@@ -46,6 +38,7 @@ export default function WarrantyRulesAdmin() {
 
   useEffect(() => {
     fetchRules()
+    fetchCategories()
   }, [])
 
   async function fetchRules() {
@@ -58,6 +51,21 @@ export default function WarrantyRulesAdmin() {
       setLoading(false)
     }
   }
+
+  async function fetchCategories() {
+    try {
+      const response = await api.get('/rules/categories')
+      setCategories(response.data.categories || [])
+    } catch {
+      // non-critical
+    }
+  }
+
+  const usedCategories = useMemo(() => new Set(rules.map((r) => r.category?.toUpperCase())), [rules])
+  const availableCategories = useMemo(
+    () => categories.filter((c) => !usedCategories.has(c.toUpperCase()) || (editingId && form.category.toUpperCase() === c.toUpperCase())),
+    [categories, usedCategories, editingId, form.category],
+  )
 
   function startCreate() {
     setForm(emptyForm())
@@ -85,11 +93,26 @@ export default function WarrantyRulesAdmin() {
     }))
   }
 
-  function updateMessage(key, value) {
-    setForm((current) => ({
-      ...current,
-      messages: { ...current.messages, [key]: value },
-    }))
+  function updateTerm(index, value) {
+    setForm((current) => {
+      const terms = [...current.terms]
+      terms[index] = value
+      return { ...current, terms }
+    })
+  }
+
+  function addTerm() {
+    setForm((current) => {
+      if (current.terms.length >= MAX_TERMS) return current
+      return { ...current, terms: [...current.terms, ''] }
+    })
+  }
+
+  function removeTerm(index) {
+    setForm((current) => {
+      const terms = current.terms.filter((_, i) => i !== index)
+      return { ...current, terms: terms.length > 0 ? terms : [''] }
+    })
   }
 
   function validateForm() {
@@ -97,8 +120,8 @@ export default function WarrantyRulesAdmin() {
     if (!form.warranty_months || Number(form.warranty_months) < 1) {
       return 'Warranty months must be at least 1'
     }
-    const missingMessage = MESSAGE_FIELDS.find(([key]) => !form.messages[key]?.trim())
-    if (missingMessage) return `${missingMessage[1]} message is required`
+    const hasAtLeastOneTerm = form.terms.some((t) => t.trim())
+    if (!hasAtLeastOneTerm) return 'At least one warranty term is required'
     return null
   }
 
@@ -114,10 +137,7 @@ export default function WarrantyRulesAdmin() {
       category: form.category.trim(),
       warranty_months: Number(form.warranty_months),
       is_active: form.is_active,
-      messages: MESSAGE_FIELDS.reduce(
-        (messages, [key]) => ({ ...messages, [key]: form.messages[key].trim() }),
-        {},
-      ),
+      terms: form.terms.filter((t) => t.trim()),
     }
 
     setSaving(true)
@@ -200,14 +220,30 @@ export default function WarrantyRulesAdmin() {
               <label htmlFor="category" className="mb-2 block text-sm font-medium text-surface-800">
                 Category
               </label>
-              <input
-                id="category"
-                name="category"
-                value={form.category}
-                onChange={updateFormField}
-                className="input"
-                placeholder="Category name"
-              />
+              {availableCategories.length > 0 && !editingId ? (
+                <select
+                  id="category"
+                  name="category"
+                  value={form.category}
+                  onChange={updateFormField}
+                  className="input"
+                >
+                  <option value="">Select a category</option>
+                  {availableCategories.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  id="category"
+                  name="category"
+                  value={form.category}
+                  onChange={updateFormField}
+                  className="input"
+                  placeholder="Category name"
+                  readOnly={!!editingId}
+                />
+              )}
             </div>
 
             <div>
@@ -238,22 +274,41 @@ export default function WarrantyRulesAdmin() {
             Active
           </label>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
-            {MESSAGE_FIELDS.map(([key, label]) => (
-              <div key={key}>
-                <label htmlFor={key} className="mb-2 block text-sm font-medium text-surface-800">
-                  {label}
-                </label>
-                <textarea
-                  id={key}
-                  rows="2"
-                  value={form.messages[key]}
-                  onChange={(event) => updateMessage(key, event.target.value)}
-                  className="input min-h-20 resize-y"
-                  placeholder={`${label} response`}
-                />
-              </div>
-            ))}
+          <div className="mt-5">
+            <div className="mb-3 flex items-center justify-between">
+              <label className="text-sm font-medium text-surface-800">
+                Warranty Terms ({form.terms.length}/{MAX_TERMS})
+              </label>
+              {form.terms.length < MAX_TERMS && (
+                <button type="button" onClick={addTerm} className="btn-secondary text-xs">
+                  <Plus className="h-3 w-3" />
+                  Add Term
+                </button>
+              )}
+            </div>
+            <div className="space-y-2">
+              {form.terms.map((term, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <span className="mt-2.5 text-xs font-medium text-surface-400 min-w-6 text-right">{index + 1}.</span>
+                  <textarea
+                    rows="2"
+                    value={term}
+                    onChange={(event) => updateTerm(index, event.target.value)}
+                    className="input min-h-16 resize-y flex-1"
+                    placeholder={`Warranty term ${index + 1}`}
+                  />
+                  {form.terms.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeTerm(index)}
+                      className="mt-2 rounded p-1 text-danger-500 hover:bg-danger-50"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="mt-5 flex flex-wrap gap-2">
@@ -295,14 +350,16 @@ export default function WarrantyRulesAdmin() {
               </div>
             </div>
 
-            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-              {MESSAGE_FIELDS.map(([key, label]) => (
-                <div key={key} className="rounded-lg border border-surface-200 bg-surface-50 p-3">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-surface-500">{label}</p>
-                  <p className="mt-1 text-sm text-surface-800">{rule.messages?.[key] || 'N/A'}</p>
-                </div>
-              ))}
-            </div>
+            {rule.terms && rule.terms.length > 0 && (
+              <div className="mt-4 space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-surface-500">Warranty Terms</p>
+                <ol className="list-decimal space-y-1 pl-5">
+                  {rule.terms.map((term, index) => (
+                    <li key={index} className="text-sm text-surface-800">{term}</li>
+                  ))}
+                </ol>
+              </div>
+            )}
           </div>
         ))}
 

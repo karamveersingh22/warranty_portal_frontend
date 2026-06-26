@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { CheckCircle2, Database, FileUp, Loader2, Upload } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Database, FileUp, Loader2, Trash2, Upload } from 'lucide-react'
 import api from '../../api/axios'
 
 function metricValue(result, key) {
@@ -14,6 +14,24 @@ export default function UploadDBF() {
   const [result, setResult] = useState(null)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [job, setJob] = useState(null)
+  const [resetting, setResetting] = useState(false)
+
+  const handleReset = async () => {
+    if (!window.confirm('This will DELETE all product pieces, registered products, enquiries, warranty rules, and import history. This cannot be undone. Are you sure?')) return
+    if (!window.confirm('FINAL WARNING: All data will be permanently deleted. Continue?')) return
+
+    setResetting(true)
+    try {
+      const response = await api.delete('/upload/reset-data')
+      toast.success(response.data.message || 'Data reset complete')
+      setResult(null)
+      setJob(null)
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to reset data')
+    } finally {
+      setResetting(false)
+    }
+  }
 
   const setFile = (event, type) => {
     const file = event.target.files?.[0]
@@ -64,10 +82,20 @@ export default function UploadDBF() {
 
   return (
     <section className="space-y-6">
-      <div className="border-b border-surface-200 pb-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Admin</p>
-        <h1 className="mt-2 text-3xl font-bold text-surface-950">Upload DBF</h1>
-        <p className="mt-1 text-sm text-surface-500">Import BOOKSALE and SERIALS files into the product master.</p>
+      <div className="flex flex-col gap-4 border-b border-surface-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Admin</p>
+          <h1 className="mt-2 text-3xl font-bold text-surface-950">Upload DBF</h1>
+          <p className="mt-1 text-sm text-surface-500">Import BOOKSALE and SERIALS files into the product master.</p>
+        </div>
+        <button
+          onClick={handleReset}
+          disabled={resetting || loading}
+          className="flex items-center gap-2 rounded-lg border border-danger-200 bg-danger-50 px-4 py-2 text-sm font-medium text-danger-700 hover:bg-danger-100 disabled:opacity-50"
+        >
+          {resetting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+          Reset All Data
+        </button>
       </div>
 
       <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
