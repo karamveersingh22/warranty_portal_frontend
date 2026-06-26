@@ -57,8 +57,8 @@ export default function CustomerDashboard() {
     <section className="space-y-6">
       <div className="flex flex-col gap-4 border-b border-surface-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Customer</p>
-          <h1 className="mt-2 text-3xl font-bold text-surface-950">Dashboard</h1>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent-600">Welcome to Safrina</p>
+          <h1 className="mt-2 font-display text-3xl font-semibold text-surface-950">Dashboard</h1>
           <p className="mt-1 text-sm text-surface-500">Track product warranties, status, and remaining coverage.</p>
         </div>
         <Link to="/customer/register-product" className="btn-primary">
@@ -116,11 +116,11 @@ function StatCard({ icon: Icon, label, value, tone }) {
   }
 
   return (
-    <div className="rounded-lg border border-surface-200 bg-white p-5 shadow-sm">
-      <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${tones[tone]}`}>
+    <div className="rounded-2xl border border-surface-200/80 bg-white p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-glass-lg">
+      <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${tones[tone]}`}>
         <Icon className="h-5 w-5" />
       </div>
-      <p className="mt-4 text-2xl font-bold text-surface-950">{value}</p>
+      <p className="mt-4 font-display text-3xl font-semibold text-surface-950">{value}</p>
       <p className="mt-1 text-sm text-surface-500">{label}</p>
     </div>
   )

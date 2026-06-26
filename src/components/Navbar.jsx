@@ -1,7 +1,8 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { BookOpen, Headset, Home, LogOut, Menu, MessageSquare, Package, PackagePlus, Shield, User, X } from 'lucide-react'
+import { BookOpen, Headset, Home, LogOut, Menu, MessageSquare, Package, PackagePlus, User, X } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import Brand from './Brand'
 
 const CUSTOMER_NAV = [
   { path: '/customer/dashboard', label: 'Dashboard', icon: Home },
@@ -24,13 +25,10 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-surface-200 bg-white">
+    <header className="sticky top-0 z-40 border-b border-surface-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link to="/customer/dashboard" className="flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-white">
-            <Shield className="h-5 w-5" />
-          </span>
-          <span className="hidden text-base font-bold text-surface-950 sm:block">Warranty Portal</span>
+        <Link to="/customer/dashboard">
+          <Brand size="sm" showTagline={false} />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

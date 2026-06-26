@@ -4,6 +4,7 @@ import { ArrowLeft, MailCheck, RotateCcw } from 'lucide-react'
 import toast from 'react-hot-toast'
 import OTPInput from '../../components/OTPInput'
 import { useAuth } from '../../hooks/useAuth'
+import AuthShell from '../../components/AuthShell'
 
 export default function OTPVerification() {
   const navigate = useNavigate()
@@ -73,33 +74,33 @@ export default function OTPVerification() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-md items-center px-4">
-      <div className="w-full rounded-lg border border-surface-200 bg-white p-6 shadow-sm">
-        <Link to="/login" className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-surface-600 hover:text-surface-950">
+    <AuthShell>
+      <div className="rounded-2xl border border-surface-200/80 bg-white p-8 shadow-glass">
+        <Link to="/login" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-surface-500 hover:text-surface-950">
           <ArrowLeft className="h-4 w-4" />
           Change email
         </Link>
 
-        <div className="mb-6 text-center">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-brand-600 text-white">
-            <MailCheck className="h-6 w-6" />
+        <div className="text-center">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
+            <MailCheck className="h-7 w-7" />
           </span>
-          <h1 className="mt-4 text-xl font-bold text-surface-950">Verify OTP</h1>
-          <p className="mt-2 text-sm leading-6 text-surface-600">
-            Enter the 6 digit code sent to <span className="font-semibold text-surface-900">{email}</span>
+          <h1 className="mt-4 font-display text-3xl font-semibold text-surface-950">Verify your code</h1>
+          <p className="mt-2 text-sm leading-6 text-surface-500">
+            Enter the 6-digit code sent to <span className="font-semibold text-surface-900">{email}</span>
           </p>
         </div>
 
-        <form onSubmit={handleVerify} className="space-y-5">
+        <form onSubmit={handleVerify} className="mt-7 space-y-5">
           <OTPInput value={otp} onChange={setOtp} />
 
-          <div className="text-center text-sm text-surface-600">
+          <div className="text-center text-sm text-surface-500">
             {secondsLeft > 0 ? `OTP expires in ${formattedTime}` : 'OTP expired. Request a new code.'}
           </div>
 
-          {error && <div className="rounded-lg bg-danger-50 px-3 py-2 text-sm text-danger-700">{error}</div>}
+          {error && <div className="rounded-xl bg-danger-50 px-3 py-2 text-sm text-danger-700">{error}</div>}
 
-          <button type="submit" disabled={loading || otp.length !== 6 || secondsLeft === 0} className="btn-primary w-full">
+          <button type="submit" disabled={loading || otp.length !== 6 || secondsLeft === 0} className="btn-primary w-full py-3 text-base">
             {loading ? 'Verifying...' : 'Verify and Login'}
           </button>
         </form>
@@ -114,6 +115,6 @@ export default function OTPVerification() {
           Resend OTP
         </button>
       </div>
-    </div>
+    </AuthShell>
   )
 }
