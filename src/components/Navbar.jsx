@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { BookOpen, Home, LogOut, Menu, MessageSquare, Package, PackagePlus, Shield, User, X } from 'lucide-react'
+import { BookOpen, Headset, Home, LogOut, Menu, MessageSquare, Package, PackagePlus, Shield, User, X } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 const CUSTOMER_NAV = [
@@ -9,6 +9,7 @@ const CUSTOMER_NAV = [
   { path: '/customer/my-products', label: 'My Products', icon: Package },
   { path: '/customer/enquiry', label: 'Enquiries', icon: MessageSquare },
   { path: '/customer/warranty-rules', label: 'Rules', icon: BookOpen },
+  { path: '/customer/support', label: 'Support', icon: Headset },
   { path: '/customer/profile', label: 'Profile', icon: User },
 ]
 

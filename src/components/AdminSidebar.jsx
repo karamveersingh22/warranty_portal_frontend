@@ -1,8 +1,10 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import {
+  ClipboardCheck,
   ClipboardList,
   Database,
+  Headset,
   History,
   LayoutDashboard,
   LogOut,
@@ -19,11 +21,13 @@ const ADMIN_NAV = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/admin/upload-dbf', label: 'Upload DBF', icon: Upload },
   { path: '/admin/import-history', label: 'Import History', icon: History },
+  { path: '/admin/registration-requests', label: 'Registration Requests', icon: ClipboardCheck },
   { path: '/admin/products', label: 'Products', icon: Database },
   { path: '/admin/piece-search', label: 'Piece Search', icon: Search },
   { path: '/admin/customers', label: 'Customers', icon: Users },
   { path: '/admin/enquiries', label: 'Enquiries', icon: MessageSquare },
   { path: '/admin/warranty-rules', label: 'Warranty Rules', icon: Settings },
+  { path: '/admin/support', label: 'Support Team', icon: Headset },
 ]
 
 export default function AdminSidebar() {

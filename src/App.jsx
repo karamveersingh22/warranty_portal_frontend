@@ -17,6 +17,7 @@ import MyProducts from './pages/customer/MyProducts'
 import ProductDetail from './pages/customer/ProductDetail'
 import CustomerWarrantyRules from './pages/customer/WarrantyRules'
 import CustomerEnquiry from './pages/customer/Enquiry'
+import CustomerSupport from './pages/customer/Support'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminUploadDBF from './pages/admin/UploadDBF'
 import AdminImportHistory from './pages/admin/ImportHistory'
@@ -28,6 +29,8 @@ import AdminCustomerDetail from './pages/admin/CustomerDetail'
 import AdminEnquiries from './pages/admin/Enquiries'
 import AdminEnquiryDetail from './pages/admin/EnquiryDetail'
 import WarrantyRulesAdmin from './pages/admin/WarrantyRulesAdmin'
+import RegistrationRequests from './pages/admin/RegistrationRequests'
+import SupportAdmin from './pages/admin/SupportAdmin'
 import './App.css'
 
 function PublicScreen({ children }) {
@@ -61,6 +64,7 @@ function App() {
                 <Route path="product/:piece" element={<ProductDetail />} />
                 <Route path="enquiry" element={<CustomerEnquiry />} />
                 <Route path="warranty-rules" element={<CustomerWarrantyRules />} />
+                <Route path="support" element={<CustomerSupport />} />
                 <Route path="logout" element={<CustomerLogout />} />
               </Route>
             </Route>
@@ -75,6 +79,7 @@ function App() {
                 <Route path="upload-dbf" element={<AdminUploadDBF />} />
                 <Route path="import-history" element={<AdminImportHistory />} />
                 <Route path="products" element={<AdminProducts />} />
+                <Route path="registration-requests" element={<RegistrationRequests />} />
                 <Route path="piece-search" element={<AdminPieceSearch />} />
                 <Route path="piece/:piece" element={<AdminPieceDetail />} />
                 <Route path="customers" element={<AdminCustomers />} />
@@ -82,6 +87,7 @@ function App() {
                 <Route path="enquiries" element={<AdminEnquiries />} />
                 <Route path="enquiry/:id" element={<AdminEnquiryDetail />} />
                 <Route path="warranty-rules" element={<WarrantyRulesAdmin />} />
+                <Route path="support" element={<SupportAdmin />} />
               </Route>
             </Route>
           </Route>

@@ -62,9 +62,8 @@ export default function RegisterProduct() {
     setRegistering(true)
     try {
       const response = await api.post('/warranty/register', { piece: cleanPiece, terms_accepted: true })
-      const registeredPiece = response.data.registration?.piece || cleanPiece
-      toast.success('Warranty registered')
-      navigate(`/customer/product/${encodeURIComponent(registeredPiece)}`)
+      toast.success(response.data.message || 'Registration request submitted for admin approval')
+      navigate('/customer/my-products')
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Registration failed')
     } finally {
@@ -206,7 +205,7 @@ export default function RegisterProduct() {
               <div className="mt-4">
                 <button onClick={handleRegister} disabled={!canRegister || registering} className="btn-primary">
                   {registering ? <Loader2 className="h-4 w-4 animate-spin" /> : <BadgeCheck className="h-4 w-4" />}
-                  Register Warranty
+                  Submit for Approval
                 </button>
               </div>
             </div>
