@@ -5,13 +5,14 @@ import { useAuth } from '../hooks/useAuth'
 import Brand from './Brand'
 
 const CUSTOMER_NAV = [
-  { path: '/customer/dashboard', label: 'Dashboard', icon: Home },
-  { path: '/customer/register-product', label: 'Register Product', icon: PackagePlus },
+  { path: '/customer/profile', label: 'Profile', icon: User },
   { path: '/customer/my-products', label: 'My Products', icon: Package },
+  { path: '/customer/register-product', label: 'Register Product', icon: PackagePlus },
+  { path: '/customer/dashboard', label: 'Dashboard', icon: Home },
   { path: '/customer/enquiry', label: 'Enquiries', icon: MessageSquare },
   { path: '/customer/warranty-rules', label: 'Rules', icon: BookOpen },
   { path: '/customer/support', label: 'Support', icon: Headset },
-  { path: '/customer/profile', label: 'Profile', icon: User },
+  { path: '/', label: 'Home', icon: Home, end: true },
 ]
 
 export default function Navbar() {
@@ -32,17 +33,11 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          <NavLink
-            to="/"
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-surface-600 hover:bg-surface-100"
-          >
-            <Home className="h-4 w-4" />
-            Home
-          </NavLink>
-          {CUSTOMER_NAV.map(({ path, label, icon: Icon }) => (
+          {CUSTOMER_NAV.map(({ path, label, icon: Icon, end }) => (
             <NavLink
               key={path}
               to={path}
+              end={end}
               className={({ isActive }) =>
                 `flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   isActive ? 'bg-brand-50 text-brand-700' : 'text-surface-600 hover:bg-surface-100'
@@ -56,8 +51,8 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <span className="hidden max-w-[180px] truncate rounded-lg border border-surface-200 px-3 py-1.5 text-xs text-surface-600 sm:block">
-            {user?.email || 'Customer'}
+          <span className="hidden max-w-[180px] truncate rounded-lg border border-surface-200 px-3 py-1.5 text-xs text-surface-600 lg:block">
+            {user?.name || user?.email || 'Customer'}
           </span>
           <button onClick={handleLogout} className="rounded-lg p-2 text-surface-500 hover:bg-surface-100" title="Logout">
             <LogOut className="h-4 w-4" />
@@ -71,10 +66,11 @@ export default function Navbar() {
       {mobileOpen && (
         <nav className="border-t border-surface-200 bg-white px-4 py-3 md:hidden">
           <div className="space-y-1">
-            {CUSTOMER_NAV.map(({ path, label, icon: Icon }) => (
+            {CUSTOMER_NAV.map(({ path, label, icon: Icon, end }) => (
               <NavLink
                 key={path}
                 to={path}
+                end={end}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium ${

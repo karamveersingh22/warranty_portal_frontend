@@ -21,5 +21,14 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
     return <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/customer/my-products'} replace />
   }
 
+  // Customers must complete their profile before accessing any other screen.
+  // Only the profile and logout routes are reachable while it is incomplete.
+  if (user.role === 'customer' && !user.profile_complete) {
+    const allowedWhileIncomplete = ['/customer/profile', '/customer/logout']
+    if (!allowedWhileIncomplete.includes(location.pathname)) {
+      return <Navigate to="/customer/profile" replace />
+    }
+  }
+
   return children || <Outlet />
 }

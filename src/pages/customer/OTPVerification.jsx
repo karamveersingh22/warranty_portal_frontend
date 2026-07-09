@@ -35,7 +35,7 @@ export default function OTPVerification() {
   }
 
   if (token && user?.role === 'customer') {
-    return <Navigate to="/customer/my-products" replace />
+    return <Navigate to={user?.profile_complete ? '/customer/my-products' : '/customer/profile'} replace />
   }
 
   if (token && user?.role === 'admin') {
@@ -55,9 +55,17 @@ export default function OTPVerification() {
     if (result.ok) {
       const verifiedRole = result.user?.role
       const isAdminRequest = requestedPath?.startsWith('/admin')
-      const redirectTo = verifiedRole === 'admin'
-        ? (isAdminRequest ? requestedPath : '/admin/dashboard')
-        : (isAdminRequest ? '/customer/my-products' : requestedPath || '/customer/my-products')
+
+      let redirectTo
+      if (verifiedRole === 'admin') {
+        redirectTo = isAdminRequest ? requestedPath : '/admin/dashboard'
+      } else if (!result.user?.profile_complete) {
+        // Customers must finish their profile before anything else.
+        redirectTo = '/customer/profile'
+      } else {
+        redirectTo = isAdminRequest ? '/customer/my-products' : (requestedPath || '/customer/my-products')
+      }
+
       toast.success('Login successful')
       navigate(redirectTo, { replace: true })
     }

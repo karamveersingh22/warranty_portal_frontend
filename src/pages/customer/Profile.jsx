@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Loader2, Mail, Save, User } from 'lucide-react'
 import api from '../../api/axios'
@@ -14,7 +15,9 @@ const emptyProfile = {
 }
 
 export default function Profile() {
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
+  const navigate = useNavigate()
+  const mustComplete = user?.role === 'customer' && !user?.profile_complete
   const [form, setForm] = useState(emptyProfile)
   const [email, setEmail] = useState(user?.email || '')
   const [loading, setLoading] = useState(true)
@@ -61,7 +64,17 @@ export default function Profile() {
     try {
       const response = await api.post('/customer/profile', form)
       setEmail(response.data.email || email)
+      const refreshed = await refreshUser()
+      if (mustComplete) {
+        toast.success('Profile completed')
+        navigate('/customer/my-products', { replace: true })
+        return
+      }
       toast.success('Profile updated')
+      // Fallback: if this was still the first completion, move them along.
+      if (refreshed?.profile_complete && !user?.profile_complete) {
+        navigate('/customer/my-products', { replace: true })
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to update profile')
     } finally {
@@ -84,6 +97,12 @@ export default function Profile() {
         <h1 className="mt-2 text-3xl font-bold text-surface-950">Profile</h1>
         <p className="mt-1 text-sm text-surface-500">Keep your contact details current for warranty support.</p>
       </div>
+
+      {mustComplete && (
+        <div className="rounded-lg border border-accent-200 bg-accent-50 px-4 py-3 text-sm font-medium text-accent-800">
+          You need to complete your profile before moving forward. Once saved, you can register your products and submit enquiries.
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="rounded-lg border border-surface-200 bg-white p-5 shadow-sm">

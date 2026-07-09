@@ -93,10 +93,21 @@ export function AuthProvider({ children }) {
     setError(null)
   }
 
+  const refreshUser = async () => {
+    if (!token) return null
+    try {
+      const res = await api.get('/auth/me')
+      setUser(res.data)
+      return res.data
+    } catch (err) {
+      return null
+    }
+  }
+
   const clearError = () => setError(null)
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, error, sendOTP, verifyOTP, logout, clearError }}>
+    <AuthContext.Provider value={{ user, token, loading, error, sendOTP, verifyOTP, logout, refreshUser, clearError }}>
       {children}
     </AuthContext.Provider>
   )
