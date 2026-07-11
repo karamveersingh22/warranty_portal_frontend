@@ -43,7 +43,7 @@ export default function AdminSidebar() {
   return (
     <aside className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-gradient-hero text-white transition-all duration-300 ${collapsed ? 'w-[68px]' : 'w-[250px]'}`}>
       <div className="flex h-16 items-center gap-3 border-b border-white/10 px-4">
-        <BrandMark className="h-9 w-9" />
+        <BrandMark className="h-8 w-12" />
         {!collapsed && (
           <div className="leading-tight">
             <p className="font-display text-base font-semibold">Safrina</p>
