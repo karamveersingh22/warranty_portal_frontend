@@ -1,13 +1,13 @@
-import safrinaLogo from '../assets/Safrina-Logo-white.png'
+import safrinaLogo from '../assets/Safrina_Logo_white_bgremove.png'
 
 /**
  * Official Safrina Mattress logo, shared across customer and admin layouts.
- * The source artwork includes white space above the mark, so the wrapper crops
- * that space consistently without modifying the supplied brand asset.
+ * The transparent source artwork is cropped and sized consistently by this
+ * component without modifying the supplied brand asset.
  */
 export function BrandMark({ className = 'h-8 w-14', rounded = 'rounded-md' }) {
   return (
-    <span className={`inline-flex shrink-0 items-center overflow-hidden bg-white ${className} ${rounded}`}>
+    <span className={`inline-flex shrink-0 items-center overflow-hidden ${className} ${rounded}`}>
       <img
         src={safrinaLogo}
         alt="Safrina Mattress"
@@ -31,7 +31,7 @@ export default function Brand({
 
   return (
     <div
-      className={`inline-flex overflow-hidden rounded-md bg-white ${sizeClass} ${className}`}
+      className={`inline-flex overflow-hidden rounded-md ${sizeClass} ${className}`}
       data-variant={variant}
       data-show-tagline={showTagline}
     >
