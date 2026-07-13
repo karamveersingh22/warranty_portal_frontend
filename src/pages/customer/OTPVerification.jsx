@@ -67,7 +67,10 @@ export default function OTPVerification() {
       }
 
       toast.success('Login successful')
-      navigate(redirectTo, { replace: true })
+      navigate(redirectTo, {
+        replace: true,
+        state: !result.user?.profile_complete && requestedPath ? { from: requestedPath } : undefined,
+      })
     }
   }
 

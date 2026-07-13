@@ -12,7 +12,7 @@ export default function Login() {
   const [email, setEmail] = useState(location.state?.email || '')
 
   if (token && user?.role === 'customer') {
-    return <Navigate to="/customer/my-products" replace />
+    return <Navigate to={user.profile_complete ? (location.state?.from?.pathname || '/customer/my-products') : '/customer/profile'} replace />
   }
 
   if (token && user?.role === 'admin') {

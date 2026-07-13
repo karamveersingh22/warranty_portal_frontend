@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Loader2, Mail, Save, User } from 'lucide-react'
 import api from '../../api/axios'
@@ -17,6 +17,7 @@ const emptyProfile = {
 export default function Profile() {
   const { user, refreshUser } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const mustComplete = user?.role === 'customer' && !user?.profile_complete
   const [form, setForm] = useState(emptyProfile)
   const [email, setEmail] = useState(user?.email || '')
@@ -67,7 +68,7 @@ export default function Profile() {
       const refreshed = await refreshUser()
       if (mustComplete) {
         toast.success('Profile completed')
-        navigate('/customer/my-products', { replace: true })
+        navigate(location.state?.from || '/customer/my-products', { replace: true })
         return
       }
       toast.success('Profile updated')

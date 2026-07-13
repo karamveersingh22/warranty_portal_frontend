@@ -18,6 +18,7 @@ import ProductDetail from './pages/customer/ProductDetail'
 import CustomerWarrantyRules from './pages/customer/WarrantyRules'
 import CustomerEnquiry from './pages/customer/Enquiry'
 import CustomerSupport from './pages/customer/Support'
+import CustomerDealers from './pages/customer/Dealers'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminUploadDBF from './pages/admin/UploadDBF'
 import AdminImportHistory from './pages/admin/ImportHistory'
@@ -65,6 +66,7 @@ function App() {
                 <Route path="enquiry" element={<CustomerEnquiry />} />
                 <Route path="warranty-rules" element={<CustomerWarrantyRules />} />
                 <Route path="support" element={<CustomerSupport />} />
+                <Route path="dealers" element={<CustomerDealers />} />
                 <Route path="logout" element={<CustomerLogout />} />
               </Route>
             </Route>

@@ -26,7 +26,7 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
   if (user.role === 'customer' && !user.profile_complete) {
     const allowedWhileIncomplete = ['/customer/profile', '/customer/logout']
     if (!allowedWhileIncomplete.includes(location.pathname)) {
-      return <Navigate to="/customer/profile" replace />
+      return <Navigate to="/customer/profile" replace state={{ from: location.pathname }} />
     }
   }
 
