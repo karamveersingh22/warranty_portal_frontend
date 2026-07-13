@@ -19,6 +19,7 @@ import CustomerWarrantyRules from './pages/customer/WarrantyRules'
 import CustomerEnquiry from './pages/customer/Enquiry'
 import CustomerSupport from './pages/customer/Support'
 import CustomerDealers from './pages/customer/Dealers'
+import CustomerCatalogue from './pages/customer/Catalogue'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminUploadDBF from './pages/admin/UploadDBF'
 import AdminImportHistory from './pages/admin/ImportHistory'
@@ -50,6 +51,7 @@ function App() {
           <Route path="/" element={<PublicScreen><CustomerLanding /></PublicScreen>} />
           <Route path="/login" element={<PublicScreen><CustomerLogin /></PublicScreen>} />
           <Route path="/verify-otp" element={<PublicScreen><OTPVerification /></PublicScreen>} />
+          <Route path="/catalogue" element={<PublicScreen><CustomerCatalogue /></PublicScreen>} />
 
           <Route path="/customer">
             <Route index element={<PublicScreen><CustomerLanding /></PublicScreen>} />

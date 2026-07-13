@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, BedDouble, Clock, Headset, MapPin, MessageSquare, PackagePlus, ShieldCheck, Sparkles, UserPlus } from 'lucide-react'
+import { ArrowRight, BedDouble, BookOpen, Clock, Headset, MapPin, MessageSquare, PackagePlus, ShieldCheck, Sparkles, UserPlus } from 'lucide-react'
 import Brand from '../../components/Brand'
 import Footer from '../../components/Footer'
 
@@ -27,6 +27,13 @@ const HIGHLIGHTS = [
 ]
 
 const JOURNEYS = [
+  {
+    icon: BookOpen,
+    title: 'Explore our e-catalogue',
+    text: 'Browse the latest Safrina Mattress collection and product details.',
+    path: '/catalogue',
+    action: 'View catalogue',
+  },
   {
     icon: PackagePlus,
     title: 'Register your product',
@@ -155,7 +162,7 @@ export default function Landing() {
           <p className="text-xs font-semibold uppercase tracking-wider text-accent-700">Everything you need, in one place</p>
           <h2 className="mt-2 text-3xl font-bold text-surface-950">Explore our services</h2>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {JOURNEYS.map(({ icon: Icon, title, text, path, state, action }) => (
             <Link key={title} to={path} state={state} className="group card-hover p-6">
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-50 text-accent-700"><Icon className="h-6 w-6" /></span>
