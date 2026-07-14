@@ -110,6 +110,7 @@ export default function Enquiries() {
                 <div>
                   <p className="text-sm font-medium text-surface-900">{enquiry.item_name || 'Product'}</p>
                   <p className="mt-1 text-xs text-surface-500">Piece: {enquiry.piece}</p>
+                  {enquiry.manual_handling_required && <span className="mt-1 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Manual handling</span>}
                 </div>
                 <p className="text-sm capitalize text-surface-700">{enquiry.issue_type?.replaceAll('_', ' ') || 'N/A'}</p>
                 <StatusBadge status={enquiry.status} size="sm" />

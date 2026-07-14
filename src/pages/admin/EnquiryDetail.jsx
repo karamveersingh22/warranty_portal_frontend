@@ -113,6 +113,7 @@ export default function EnquiryDetail() {
               <div>
                 <h2 className="text-xl font-bold text-surface-950">{enquiry.item_name || 'Product Enquiry'}</h2>
                 <p className="mt-1 text-sm text-surface-500">{customerPhone || enquiry.customer_email}</p>
+                {enquiry.manual_handling_required && <span className="mt-2 inline-block rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">Older product — manual handling required</span>}
               </div>
               <StatusBadge status={enquiry.status} />
             </div>

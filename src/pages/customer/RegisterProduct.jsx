@@ -35,7 +35,7 @@ export default function RegisterProduct() {
   const product = productInfoFromLookup(lookup)
   const hasTerms = Boolean(termsData?.terms?.length)
   const hasDealerBill = Boolean(dealerBillNumber.trim() && dealerBillDate)
-  const canRegister = lookup && !lookup.is_registered && hasDealerBill && (!hasTerms || termsAccepted)
+  const canRegister = lookup && lookup.warranty_eligible && !lookup.is_registered && hasDealerBill && (!hasTerms || termsAccepted)
 
   const handleLookup = async (event) => {
     event.preventDefault()
@@ -56,7 +56,7 @@ export default function RegisterProduct() {
       const response = await api.get(`/pieces/lookup/${encodeURIComponent(cleanPiece)}`)
       setLookup(response.data)
 
-      if (!response.data.is_registered) {
+      if (!response.data.is_registered && response.data.warranty_eligible) {
         setLoadingTerms(true)
         try {
           const termsResponse = await api.get(`/warranty/terms/${encodeURIComponent(cleanPiece)}`)
@@ -154,16 +154,21 @@ export default function RegisterProduct() {
             <div className="mt-4">
               <span
                 className={`inline-block rounded-full border px-3 py-1 text-sm font-medium ${
-                  lookup.is_registered
+                  lookup.is_registered || !lookup.warranty_eligible
                     ? 'border-danger-100 bg-danger-50 text-danger-700'
                     : 'border-success-100 bg-success-50 text-success-700'
                 }`}
               >
-                {lookup.is_registered ? 'Registered' : 'Available'}
+                {lookup.is_registered ? 'Registered' : lookup.warranty_eligible ? 'Available' : 'Manual handling'}
               </span>
               <p className="mt-2 text-sm text-surface-600">
-                {lookup.is_registered ? 'Already registered' : 'Available for registration'}
+                {lookup.is_registered ? 'Already registered' : lookup.warranty_eligible ? 'Available for registration' : lookup.warranty_eligibility_message}
               </p>
+              {!lookup.is_registered && !lookup.warranty_eligible && (
+                <Link to={`/customer/enquiry?piece=${encodeURIComponent(lookup.piece)}`} className="btn-primary mt-4">
+                  Raise Enquiry
+                </Link>
+              )}
             </div>
           )}
         </div>
@@ -194,7 +199,7 @@ export default function RegisterProduct() {
         </div>
       )}
 
-      {lookup && !lookup.is_registered && (
+      {lookup && !lookup.is_registered && lookup.warranty_eligible && (
         <>
           {loadingTerms && (
             <div className="flex items-center justify-center rounded-lg border border-surface-200 bg-white p-8 shadow-sm">

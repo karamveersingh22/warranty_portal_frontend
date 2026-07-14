@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Loader2, MessageSquare, PackagePlus, Send } from 'lucide-react'
+import { Loader2, MessageSquare, Send } from 'lucide-react'
 import api from '../../api/axios'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import StatusBadge from '../../components/StatusBadge'
@@ -73,15 +73,15 @@ export default function Enquiry() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (!form.piece || !form.description.trim()) {
-      toast.error('Select a product and describe the issue')
+    if (!form.piece.trim() || !form.description.trim()) {
+      toast.error('Enter the piece number and describe the issue')
       return
     }
 
     setSubmitting(true)
     try {
       await api.post('/enquiry/', {
-        piece: form.piece,
+        piece: form.piece.trim(),
         item_name: selectedProduct?.item_name || '',
         issue_type: form.issue_type,
         description: form.description.trim(),
@@ -136,20 +136,23 @@ export default function Enquiry() {
           <div className="rounded-lg border border-surface-200 bg-white p-5 shadow-sm">
             <div className="space-y-4">
               <label className="block">
-                <span className="mb-2 block text-sm font-medium text-surface-800">Registered Product</span>
-                <select
+                <span className="mb-2 block text-sm font-medium text-surface-800">Piece Number</span>
+                <input
+                  list="customer-product-pieces"
                   value={form.piece}
                   onChange={(event) => setForm((current) => ({ ...current, piece: event.target.value }))}
                   className="input"
+                  placeholder="Enter the mattress piece number"
                   required
-                >
-                  <option value="">Select a product</option>
+                />
+                <datalist id="customer-product-pieces">
                   {products.map((product) => (
                     <option key={product.id || product.piece} value={product.piece}>
                       {product.piece} - {product.item_name}
                     </option>
                   ))}
-                </select>
+                </datalist>
+                <p className="mt-2 text-xs text-surface-500">Older products that are not eligible for online warranty can still be submitted here for manual support.</p>
               </label>
 
               <label className="block">
@@ -177,7 +180,7 @@ export default function Enquiry() {
                 />
               </label>
 
-              <button type="submit" disabled={submitting || products.length === 0} className="btn-primary">
+              <button type="submit" disabled={submitting || !form.piece.trim()} className="btn-primary">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 Submit Enquiry
               </button>
@@ -193,15 +196,14 @@ export default function Enquiry() {
                 <Info label="Warranty Status" value={<StatusBadge status={selectedProduct.status} size="sm" />} />
                 <Info label="Remaining" value={`${selectedProduct.remaining_days ?? 0} days`} />
               </div>
-            ) : products.length ? (
-              <p className="mt-3 text-sm text-surface-500">Choose a registered product to raise an enquiry.</p>
+            ) : form.piece.trim() ? (
+              <div className="mt-4 rounded-lg bg-surface-50 p-4">
+                <Info label="Piece" value={form.piece.trim()} />
+                <p className="mt-3 text-sm text-surface-600">The backend will verify this piece and route older products for manual handling.</p>
+              </div>
             ) : (
               <div className="mt-4 rounded-lg bg-surface-50 p-4">
-                <p className="text-sm text-surface-600">You need a registered product before raising an enquiry.</p>
-                <Link to="/customer/register-product" className="btn-primary mt-4">
-                  <PackagePlus className="h-4 w-4" />
-                  Register Product
-                </Link>
+                <p className="text-sm text-surface-600">Enter a piece number to raise an enquiry. Registered products also appear as suggestions.</p>
               </div>
             )}
           </aside>
