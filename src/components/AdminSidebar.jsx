@@ -11,7 +11,6 @@ import {
   LogOut,
   MessageSquare,
   Search,
-  ScrollText,
   Settings,
   Upload,
   Users,
@@ -29,8 +28,8 @@ const ADMIN_NAV = [
   { path: '/admin/piece-search', label: 'Piece Search', icon: Search },
   { path: '/admin/customers', label: 'Customers', icon: Users },
   { path: '/admin/enquiries', label: 'Enquiries', icon: MessageSquare },
+  { path: '/admin/feedback', label: 'Customer Feedback', icon: ClipboardList },
   { path: '/admin/warranty-rules', label: 'Warranty Rules', icon: Settings },
-  { path: '/admin/onboarding-terms', label: 'Customer Terms', icon: ScrollText },
   { path: '/admin/support', label: 'Support Team', icon: Headset },
 ]
 

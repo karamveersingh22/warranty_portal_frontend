@@ -21,17 +21,17 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
     return <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/customer/my-products'} replace />
   }
 
-  if (user.role === 'customer' && user.terms_required && !user.onboarding_terms_accepted) {
-    const allowedBeforeAcceptance = ['/customer/terms', '/customer/logout']
-    if (!allowedBeforeAcceptance.includes(location.pathname)) {
-      return <Navigate to="/customer/terms" replace />
+  if (user.role === 'customer' && user.feedback_required) {
+    const allowedWhileFeedbackPending = ['/customer/feedback', '/customer/logout']
+    if (!allowedWhileFeedbackPending.includes(location.pathname)) {
+      return <Navigate to="/customer/feedback" replace />
     }
   }
 
   // Customers must complete their profile before accessing any other screen.
   // Only the profile and logout routes are reachable while it is incomplete.
   if (user.role === 'customer' && !user.profile_complete) {
-    const allowedWhileIncomplete = ['/customer/profile', '/customer/terms', '/customer/logout']
+    const allowedWhileIncomplete = ['/customer/profile', '/customer/logout']
     if (!allowedWhileIncomplete.includes(location.pathname)) {
       return <Navigate to="/customer/profile" replace state={{ from: location.pathname }} />
     }

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ArrowLeft, BadgeCheck, CheckCircle2, Loader2, PackageCheck, Search, Shield } from 'lucide-react'
 import api from '../../api/axios'
+import { useAuth } from '../../hooks/useAuth'
 
 function productInfoFromLookup(lookup) {
   return lookup?.product_information || {}
@@ -21,6 +22,7 @@ function indiaToday() {
 
 export default function RegisterProduct() {
   const navigate = useNavigate()
+  const { refreshUser } = useAuth()
   const [piece, setPiece] = useState('')
   const [dealerBillNumber, setDealerBillNumber] = useState('')
   const dealerBillDate = indiaToday()
@@ -87,7 +89,10 @@ export default function RegisterProduct() {
         terms_accepted: hasTerms ? termsAccepted : false,
       })
       toast.success(response.data.message || 'Registration request submitted for admin approval')
-      navigate('/customer/my-products')
+      await refreshUser()
+      navigate(response.data.request?.feedback_required ? '/customer/feedback' : '/customer/my-products', {
+        state: response.data.request?.feedback_required ? { piece: cleanPiece } : undefined,
+      })
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Registration failed')
     } finally {

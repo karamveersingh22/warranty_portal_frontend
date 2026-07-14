@@ -35,7 +35,7 @@ export default function OTPVerification() {
   }
 
   if (token && user?.role === 'customer') {
-    return <Navigate to={user.terms_required && !user.onboarding_terms_accepted ? '/customer/terms' : user?.profile_complete ? '/customer/my-products' : '/customer/profile'} replace />
+    return <Navigate to={user.feedback_required ? '/customer/feedback' : user?.profile_complete ? '/customer/my-products' : '/customer/profile'} replace />
   }
 
   if (token && user?.role === 'admin') {
@@ -59,8 +59,8 @@ export default function OTPVerification() {
       let redirectTo
       if (verifiedRole === 'admin') {
         redirectTo = isAdminRequest ? requestedPath : '/admin/dashboard'
-      } else if (result.user?.terms_required && !result.user?.onboarding_terms_accepted) {
-        redirectTo = '/customer/terms'
+      } else if (result.user?.feedback_required) {
+        redirectTo = '/customer/feedback'
       } else if (!result.user?.profile_complete) {
         // Customers must finish their profile before anything else.
         redirectTo = '/customer/profile'
