@@ -3,6 +3,7 @@ import { useState } from 'react'
 import {
   ClipboardCheck,
   ClipboardList,
+  BookOpen,
   Database,
   Headset,
   History,
@@ -21,6 +22,7 @@ const ADMIN_NAV = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/admin/upload-dbf', label: 'Upload DBF', icon: Upload },
   { path: '/admin/import-history', label: 'Import History', icon: History },
+  { path: '/admin/catalogue', label: 'E-catalogue', icon: BookOpen },
   { path: '/admin/registration-requests', label: 'Registration Requests', icon: ClipboardCheck },
   { path: '/admin/products', label: 'Products', icon: Database },
   { path: '/admin/piece-search', label: 'Piece Search', icon: Search },

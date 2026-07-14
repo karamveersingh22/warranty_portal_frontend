@@ -4,15 +4,17 @@ import Brand from '../../components/Brand'
 import Footer from '../../components/Footer'
 import LoadingSpinner from '../../components/LoadingSpinner'
 
-const CATALOGUE_URL = '/catalogue/safrina-mattress-catalogue-2026-27.pdf'
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api').replace(/\/$/, '')
+const CATALOGUE_URL = `${API_BASE_URL}/catalogue/file`
 
 export default function Catalogue() {
   const [available, setAvailable] = useState(null)
 
   useEffect(() => {
     let active = true
-    fetch(CATALOGUE_URL, { method: 'HEAD' })
-      .then((response) => { if (active) setAvailable(response.ok) })
+    fetch(`${API_BASE_URL}/catalogue/status`)
+      .then((response) => response.ok ? response.json() : Promise.reject())
+      .then((data) => { if (active) setAvailable(data) })
       .catch(() => { if (active) setAvailable(false) })
     return () => { active = false }
   }, [])
@@ -32,11 +34,11 @@ export default function Catalogue() {
 
         {available === null ? (
           <div className="py-24"><LoadingSpinner text="Loading catalogue" /></div>
-        ) : available ? (
+        ) : available?.available ? (
           <section className="mx-auto mt-8 max-w-6xl overflow-hidden rounded-2xl border border-surface-200 bg-white shadow-card">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-200 px-5 py-4">
-              <div className="flex items-center gap-3"><FileText className="h-5 w-5 text-brand-700" /><p className="font-semibold text-surface-900">Safrina Mattress Catalogue 2026-27</p></div>
-              <div className="flex gap-2"><a className="btn-secondary" href={CATALOGUE_URL} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" /> Open</a><a className="btn-primary" href={CATALOGUE_URL} download><Download className="h-4 w-4" /> Download</a></div>
+              <div className="flex items-center gap-3"><FileText className="h-5 w-5 text-brand-700" /><p className="font-semibold text-surface-900">{available.filename}</p></div>
+              <div className="flex gap-2"><a className="btn-secondary" href={CATALOGUE_URL} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" /> Open</a><a className="btn-primary" href={`${CATALOGUE_URL}?download=true`}><Download className="h-4 w-4" /> Download</a></div>
             </div>
             <iframe title="Safrina Mattress e-catalogue" src={`${CATALOGUE_URL}#view=FitH`} className="h-[72vh] min-h-[520px] w-full border-0" />
           </section>

@@ -33,6 +33,7 @@ import AdminEnquiryDetail from './pages/admin/EnquiryDetail'
 import WarrantyRulesAdmin from './pages/admin/WarrantyRulesAdmin'
 import RegistrationRequests from './pages/admin/RegistrationRequests'
 import SupportAdmin from './pages/admin/SupportAdmin'
+import CatalogueAdmin from './pages/admin/CatalogueAdmin'
 import './App.css'
 
 function PublicScreen({ children }) {
@@ -92,6 +93,7 @@ function App() {
                 <Route path="enquiry/:id" element={<AdminEnquiryDetail />} />
                 <Route path="warranty-rules" element={<WarrantyRulesAdmin />} />
                 <Route path="support" element={<SupportAdmin />} />
+                <Route path="catalogue" element={<CatalogueAdmin />} />
               </Route>
             </Route>
           </Route>
