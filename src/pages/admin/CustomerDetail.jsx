@@ -69,11 +69,13 @@ export default function CustomerDetail() {
         </aside>
 
         <div className="space-y-6">
-          <DataTable title="Registered Products" empty="No registered products." columns={['Piece', 'Item', 'Warranty', 'Registered', 'Action']}>
+          <DataTable title="Registered Products" empty="No registered products." columns={['Piece', 'Item', 'Dealer Bill', 'Dealer Bill Date', 'Warranty', 'Registered', 'Action']}>
             {products.map((product) => (
               <tr key={product.id} className="border-t border-surface-200">
                 <td className="px-4 py-3 text-sm font-semibold text-surface-950">{product.piece}</td>
                 <td className="px-4 py-3 text-sm text-surface-700">{product.item_name || 'N/A'}</td>
+                <td className="px-4 py-3 text-sm text-surface-700">{product.dealer_bill_number || 'N/A'}</td>
+                <td className="px-4 py-3 text-sm text-surface-700">{formatDate(product.dealer_bill_date)}</td>
                 <td className="px-4 py-3"><StatusBadge status={product.status || 'inactive'} size="sm" /></td>
                 <td className="px-4 py-3 text-sm text-surface-700">{formatDate(product.registered_at)}</td>
                 <td className="px-4 py-3"><Link to={`/admin/piece/${encodeURIComponent(product.piece)}`} className="text-sm font-semibold text-brand-700">Open</Link></td>

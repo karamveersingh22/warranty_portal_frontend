@@ -53,8 +53,8 @@ export default function PieceDetail() {
           <Info label="Item" value={trace.product?.item_name} />
           <Info label="Item Code" value={trace.product?.i_code} />
           <Info label="Description" value={trace.product?.describe} />
-          <Info label="Bill" value={trace.product?.bill} />
-          <Info label="Bill Date" value={formatDate(trace.product?.bill_date)} />
+          <Info label="Company Dispatch Bill" value={trace.product?.bill} />
+          <Info label="Company Dispatch Date" value={formatDate(trace.product?.bill_date)} />
           <Info label="Booksale Match" value={trace.product?.has_booksale_match ? 'Yes' : 'No'} />
         </Panel>
         <Panel title="Warranty">
@@ -65,6 +65,8 @@ export default function PieceDetail() {
               <Info label="Customer Email" value={trace.warranty.customer_email} />
               <Info label="Status" value={<StatusBadge status={trace.warranty.status} size="sm" />} />
               <Info label="Category" value={trace.warranty.category} />
+              <Info label="Dealer Bill Number" value={trace.warranty.dealer_bill_number} />
+              <Info label="Dealer Bill Date" value={formatDate(trace.warranty.dealer_bill_date)} />
               <Info label="Duration" value={`${trace.warranty.warranty_months || 0} months`} />
               <Info label="Remaining" value={`${trace.warranty.remaining_days ?? 0} days`} />
               <Info label="Registered" value={formatDate(trace.warranty.registered_at)} />

@@ -94,10 +94,9 @@ export default function ProductDetail() {
           <div className="grid gap-3 sm:grid-cols-2">
             <Info label="Item Code" value={product.i_code || info.i_code} />
             <Info label="Category" value={product.category} />
-            <Info label="Bill" value={info.bill} />
-            <Info label="Bill Date" value={formatDate(info.bill_date)} />
+            <Info label="Dealer Bill Number" value={product.dealer_bill_number || info.dealer_bill_number} />
+            <Info label="Dealer Bill Date" value={formatDate(product.dealer_bill_date || info.dealer_bill_date)} />
             <Info label="Dealer" value={info.dealer_name} />
-            <Info label="Distributor" value={info.distributor_name} />
           </div>
         </div>
 

@@ -144,7 +144,9 @@ export default function EnquiryDetail() {
               <h2 className="text-base font-semibold text-surface-950">Traceability</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <Info label="Item Code" value={trace.product?.i_code} />
-                <Info label="Bill" value={trace.product?.bill} />
+                <Info label="Dealer Bill Number" value={trace.warranty?.dealer_bill_number} />
+                <Info label="Dealer Bill Date" value={trace.warranty?.dealer_bill_date ? new Date(trace.warranty.dealer_bill_date).toLocaleDateString('en-IN') : null} />
+                <Info label="Company Dispatch Bill" value={trace.product?.bill} />
                 <Info label="Warranty Status" value={trace.warranty?.status} />
                 <Info label="Remaining Warranty" value={trace.warranty ? `${trace.warranty.remaining_days ?? 0} days` : null} />
                 <Info label="Dealer" value={trace.dealer?.name} />

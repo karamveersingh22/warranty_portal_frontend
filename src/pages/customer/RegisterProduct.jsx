@@ -8,9 +8,22 @@ function productInfoFromLookup(lookup) {
   return lookup?.product_information || {}
 }
 
+function indiaToday() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date())
+  const value = Object.fromEntries(parts.map(({ type, value: part }) => [type, part]))
+  return `${value.year}-${value.month}-${value.day}`
+}
+
 export default function RegisterProduct() {
   const navigate = useNavigate()
   const [piece, setPiece] = useState('')
+  const [dealerBillNumber, setDealerBillNumber] = useState('')
+  const dealerBillDate = indiaToday()
   const [lookup, setLookup] = useState(null)
   const [loadingLookup, setLoadingLookup] = useState(false)
   const [registering, setRegistering] = useState(false)
@@ -20,12 +33,18 @@ export default function RegisterProduct() {
 
   const cleanPiece = piece.trim()
   const product = productInfoFromLookup(lookup)
-  const canRegister = lookup && !lookup.is_registered && termsAccepted
+  const hasTerms = Boolean(termsData?.terms?.length)
+  const hasDealerBill = Boolean(dealerBillNumber.trim() && dealerBillDate)
+  const canRegister = lookup && !lookup.is_registered && hasDealerBill && (!hasTerms || termsAccepted)
 
   const handleLookup = async (event) => {
     event.preventDefault()
     if (!cleanPiece) {
       toast.error('Enter a piece number')
+      return
+    }
+    if (!dealerBillNumber.trim()) {
+      toast.error('Enter the dealer bill number')
       return
     }
 
@@ -61,7 +80,12 @@ export default function RegisterProduct() {
 
     setRegistering(true)
     try {
-      const response = await api.post('/warranty/register', { piece: cleanPiece, terms_accepted: true })
+      const response = await api.post('/warranty/register', {
+        piece: cleanPiece,
+        dealer_bill_number: dealerBillNumber.trim(),
+        dealer_bill_date: dealerBillDate,
+        terms_accepted: hasTerms ? termsAccepted : false,
+      })
       toast.success(response.data.message || 'Registration request submitted for admin approval')
       navigate('/customer/my-products')
     } catch (error) {
@@ -86,10 +110,9 @@ export default function RegisterProduct() {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <form onSubmit={handleLookup} className="rounded-lg border border-surface-200 bg-white p-5 shadow-sm">
-          <label htmlFor="piece" className="mb-2 block text-sm font-medium text-surface-800">
-            Piece number
-          </label>
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="grid gap-4 md:grid-cols-3">
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-surface-800">Piece number</span>
             <input
               id="piece"
               value={piece}
@@ -98,7 +121,19 @@ export default function RegisterProduct() {
               placeholder="Enter piece number"
               disabled={loadingLookup || registering}
             />
-            <button type="submit" disabled={loadingLookup || registering} className="btn-primary sm:min-w-32">
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-surface-800">Dealer bill number</span>
+              <input value={dealerBillNumber} onChange={(event) => setDealerBillNumber(event.target.value)} className="input" placeholder="Bill from dealer" disabled={loadingLookup || registering} />
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-surface-800">Dealer bill date</span>
+              <input type="date" value={dealerBillDate} className="input cursor-not-allowed bg-surface-100" readOnly aria-readonly="true" />
+            </label>
+          </div>
+          <p className="mt-3 text-xs text-surface-500">Enter the dealer invoice number. The bill date and warranty start date are fixed to today and cannot be changed.</p>
+          <div className="mt-4">
+            <button type="submit" disabled={loadingLookup || registering || !cleanPiece || !hasDealerBill} className="btn-primary sm:min-w-32">
               {loadingLookup ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
               Search
             </button>
@@ -152,9 +187,9 @@ export default function RegisterProduct() {
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Info label="Item Code" value={product.i_code} />
-            <Info label="Bill" value={product.bill} />
+            <Info label="Dealer Bill Number" value={dealerBillNumber} />
+            <Info label="Dealer Bill Date" value={dealerBillDate ? new Date(`${dealerBillDate}T00:00:00`).toLocaleDateString('en-IN') : null} />
             <Info label="Dealer" value={lookup.dealer_information?.name} />
-            <Info label="Distributor" value={lookup.distributor_information?.name} />
           </div>
         </div>
       )}
@@ -216,7 +251,7 @@ export default function RegisterProduct() {
               <p className="text-sm text-surface-600 mb-4">
                 No specific warranty terms found for this category. You can proceed with registration.
               </p>
-              <button onClick={handleRegister} disabled={registering} className="btn-primary">
+              <button onClick={handleRegister} disabled={!canRegister || registering} className="btn-primary">
                 {registering ? <Loader2 className="h-4 w-4 animate-spin" /> : <BadgeCheck className="h-4 w-4" />}
                 Register Warranty
               </button>
