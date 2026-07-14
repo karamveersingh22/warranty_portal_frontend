@@ -34,6 +34,8 @@ import WarrantyRulesAdmin from './pages/admin/WarrantyRulesAdmin'
 import RegistrationRequests from './pages/admin/RegistrationRequests'
 import SupportAdmin from './pages/admin/SupportAdmin'
 import CatalogueAdmin from './pages/admin/CatalogueAdmin'
+import OnboardingTermsAdmin from './pages/admin/OnboardingTermsAdmin'
+import CustomerOnboardingTerms from './pages/customer/OnboardingTerms'
 import './App.css'
 
 function PublicScreen({ children }) {
@@ -63,6 +65,7 @@ function App() {
               <Route element={<CustomerLayout />}>
                 <Route path="dashboard" element={<CustomerDashboard />} />
                 <Route path="profile" element={<CustomerProfile />} />
+                <Route path="terms" element={<CustomerOnboardingTerms />} />
                 <Route path="register-product" element={<RegisterProduct />} />
                 <Route path="my-products" element={<MyProducts />} />
                 <Route path="product/:piece" element={<ProductDetail />} />
@@ -94,6 +97,7 @@ function App() {
                 <Route path="warranty-rules" element={<WarrantyRulesAdmin />} />
                 <Route path="support" element={<SupportAdmin />} />
                 <Route path="catalogue" element={<CatalogueAdmin />} />
+                <Route path="onboarding-terms" element={<OnboardingTermsAdmin />} />
               </Route>
             </Route>
           </Route>
