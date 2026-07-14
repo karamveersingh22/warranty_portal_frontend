@@ -64,33 +64,31 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-gradient-mesh">
       {/* Top bar */}
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6">
-        <Brand />
+      <header className="relative mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-5 sm:min-h-32 sm:justify-center sm:px-6 sm:py-6">
+        <Brand size="lg" className="h-24 w-64 sm:h-28 sm:w-72 lg:h-32 lg:w-80" />
         <Link
           to="/login"
-          className="rounded-xl border border-surface-200 bg-white/70 px-4 py-2 text-sm font-semibold text-surface-800 backdrop-blur transition hover:bg-white"
+          className="inline-flex w-full max-w-64 items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-200 sm:absolute sm:right-6 sm:top-1/2 sm:w-auto sm:-translate-y-1/2 sm:hover:-translate-y-[55%]"
         >
           Login
         </Link>
       </header>
 
       {/* Hero */}
-      <section className="mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-8 sm:px-6 lg:grid-cols-2 lg:pt-16">
-        <div>
+      <section className="mx-auto grid max-w-7xl items-center gap-10 px-4 pb-16 pt-5 sm:px-6 sm:pt-8 lg:grid-cols-2 lg:gap-12 lg:pt-12">
+        <div className="text-center lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full border border-accent-200 bg-accent-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent-700">
             <Sparkles className="h-3.5 w-3.5" />
             Safrina Warranty Portal
           </span>
           <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.1] tracking-tight text-surface-950 sm:text-5xl lg:text-6xl">
-            Welcome to
-            <br />
             <span className="text-gradient-brand">Pamper yourself with Safrina Mattress</span>
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-8 text-surface-600">
+          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-surface-600 sm:text-lg sm:leading-8 lg:mx-0">
             Welcome to the official Safrina Mattress warranty portal. Register your mattress,
             track your coverage, and reach our care team — all from one secure account.
           </p>
-          <div className="mt-6 grid max-w-xl gap-2 sm:grid-cols-2">
+          <div className="mx-auto mt-6 grid max-w-xl gap-2 text-left sm:grid-cols-2 lg:mx-0">
             {HIGHLIGHTS.map(({ icon: Icon, title, text }) => (
               <div key={title} className="flex items-start gap-2.5 rounded-xl border border-white/80 bg-white/70 p-3 shadow-sm">
                 <Icon className="mt-0.5 h-4 w-4 shrink-0 text-brand-700" />
@@ -101,10 +99,10 @@ export default function Landing() {
               </div>
             ))}
           </div>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
             <Link
               to="/login"
-              className="group inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3.5 text-sm font-semibold text-white shadow-glow transition hover:bg-brand-700"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-200"
             >
               Login
             </Link>
