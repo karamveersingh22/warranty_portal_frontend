@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Eye, Search, Users } from 'lucide-react'
+import { AlertTriangle, Eye, Loader2, Search, Trash2, Users, X } from 'lucide-react'
 import api from '../../api/axios'
 import LoadingSpinner from '../../components/LoadingSpinner'
 
@@ -15,6 +15,9 @@ export default function Customers() {
   const [search, setSearch] = useState('')
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [customerToDelete, setCustomerToDelete] = useState(null)
+  const [confirmationEmail, setConfirmationEmail] = useState('')
+  const [deleting, setDeleting] = useState(false)
 
   const fetchCustomers = async (query = search) => {
     setLoading(true)
@@ -37,6 +40,36 @@ export default function Customers() {
   const submit = (event) => {
     event.preventDefault()
     fetchCustomers(search)
+  }
+
+  const openDeleteConfirmation = (customer) => {
+    setCustomerToDelete(customer)
+    setConfirmationEmail('')
+  }
+
+  const closeDeleteConfirmation = () => {
+    if (deleting) return
+    setCustomerToDelete(null)
+    setConfirmationEmail('')
+  }
+
+  const deleteCustomer = async () => {
+    if (!customerToDelete || confirmationEmail.trim().toLowerCase() !== customerToDelete.email.toLowerCase()) return
+    setDeleting(true)
+    try {
+      const response = await api.delete(`/customer/${customerToDelete.id}`, {
+        data: { confirmation_email: confirmationEmail.trim() },
+      })
+      toast.success(response.data.message || 'Customer data permanently deleted')
+      closeDeleteConfirmation()
+      await fetchCustomers(search)
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to delete customer')
+    } finally {
+      setDeleting(false)
+      setCustomerToDelete(null)
+      setConfirmationEmail('')
+    }
   }
 
   return (
@@ -88,10 +121,20 @@ export default function Customers() {
                     <td className="px-5 py-3 text-sm font-semibold text-surface-950">{customer.registered_products || 0}</td>
                     <td className="px-5 py-3 text-sm text-surface-700">{formatDate(customer.created_at)}</td>
                     <td className="px-5 py-3">
-                      <Link to={`/admin/customer/${customer.id}`} className="inline-flex items-center gap-2 text-sm font-semibold text-brand-700">
-                        <Eye className="h-4 w-4" />
-                        View
-                      </Link>
+                      <div className="flex items-center gap-4">
+                        <Link to={`/admin/customer/${customer.id}`} className="inline-flex items-center gap-2 text-sm font-semibold text-brand-700">
+                          <Eye className="h-4 w-4" />
+                          View
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => openDeleteConfirmation(customer)}
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-danger-600 transition hover:text-danger-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -105,6 +148,68 @@ export default function Customers() {
           </div>
         )}
       </div>
+
+      {customerToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-950/60 p-4" role="dialog" aria-modal="true" aria-labelledby="delete-customer-title">
+          <div className="w-full max-w-lg rounded-xl border border-danger-200 bg-white shadow-2xl">
+            <div className="flex items-start justify-between border-b border-surface-200 p-5">
+              <div className="flex gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-danger-100 text-danger-700">
+                  <AlertTriangle className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 id="delete-customer-title" className="text-xl font-bold text-surface-950">Permanently delete customer?</h2>
+                  <p className="mt-1 text-sm text-surface-500">This action cannot be undone.</p>
+                </div>
+              </div>
+              <button type="button" onClick={closeDeleteConfirmation} disabled={deleting} className="rounded-lg p-2 text-surface-400 hover:bg-surface-100 hover:text-surface-700" aria-label="Close">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 p-5">
+              <div className="rounded-lg border border-danger-200 bg-danger-50 p-4 text-sm text-danger-800">
+                <p className="font-semibold">Once deleted, this customer's data will not be saved and cannot be recovered.</p>
+                <p className="mt-2">The profile, bought/registered products, registration requests, enquiries, feedback, and temporary OTP records will be deleted. Imported product pieces will remain available for future registration.</p>
+              </div>
+
+              <div className="rounded-lg bg-surface-50 p-4">
+                <p className="font-semibold text-surface-950">{customerToDelete.name || 'Customer'}</p>
+                <p className="mt-1 text-sm text-surface-600">{customerToDelete.email}</p>
+                <p className="mt-1 text-xs text-surface-500">{customerToDelete.registered_products || 0} registered product(s)</p>
+              </div>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-surface-800">
+                  Type <strong>{customerToDelete.email}</strong> to confirm
+                </span>
+                <input
+                  type="email"
+                  value={confirmationEmail}
+                  onChange={(event) => setConfirmationEmail(event.target.value)}
+                  className="input"
+                  placeholder="Customer email address"
+                  autoFocus
+                  disabled={deleting}
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-col-reverse gap-3 border-t border-surface-200 p-5 sm:flex-row sm:justify-end">
+              <button type="button" onClick={closeDeleteConfirmation} disabled={deleting} className="btn-secondary">Cancel</button>
+              <button
+                type="button"
+                onClick={deleteCustomer}
+                disabled={deleting || confirmationEmail.trim().toLowerCase() !== customerToDelete.email.toLowerCase()}
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-danger-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-danger-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                Delete customer permanently
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
