@@ -41,7 +41,7 @@ export default function WarrantyRules() {
       <div className="border-b border-surface-200 pb-5">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Customer</p>
         <h1 className="mt-2 text-3xl font-bold text-surface-950">Warranty Rules</h1>
-        <p className="mt-1 text-sm text-surface-500">Active category rules and warranty terms.</p>
+        <p className="mt-1 text-sm text-surface-500">Warranty terms for the products registered to your account.</p>
       </div>
 
       {rules.length ? (
@@ -82,8 +82,8 @@ export default function WarrantyRules() {
       ) : (
         <div className="rounded-lg border border-dashed border-surface-300 bg-white p-10 text-center shadow-sm">
           <Shield className="mx-auto h-10 w-10 text-surface-400" />
-          <p className="mt-4 text-sm font-medium text-surface-900">No active warranty rules available.</p>
-          <p className="mt-1 text-sm text-surface-500">Rules will appear here after an admin creates them.</p>
+          <p className="mt-4 text-sm font-medium text-surface-900">No product warranty rules to show yet.</p>
+          <p className="mt-1 text-sm text-surface-500">Rules will appear here after one of your product registrations is approved.</p>
         </div>
       )}
     </section>
