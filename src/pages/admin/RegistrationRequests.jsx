@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { AlertTriangle, Check, Clock, Loader2, Settings2, ShieldCheck, X } from 'lucide-react'
+import { AlertTriangle, Check, ChevronDown, Clock, Loader2, Settings2, ShieldCheck, X } from 'lucide-react'
 import api from '../../api/axios'
 
 const FILTERS = [
@@ -36,42 +36,59 @@ function RequestCard({ request, onApprove, onDecline, acting }) {
   const isPending = request.status === 'pending'
 
   return (
-    <article
-      className={`rounded-lg border bg-white p-5 shadow-sm ${
-        flagged ? 'border-l-4 border-danger-500 bg-danger-50 ring-2 ring-danger-200 shadow-md' : 'border-surface-200'
+    <details
+      className={`group overflow-hidden rounded-lg border bg-white shadow-sm transition ${
+        flagged ? 'border-l-4 border-danger-500 bg-danger-50/60 ring-1 ring-danger-200' : 'border-surface-200'
       }`}
     >
-      <div className="flex flex-col gap-3 border-b border-surface-100 pb-4 lg:flex-row lg:items-start lg:justify-between">
+      <summary className="grid cursor-pointer list-none items-center gap-3 px-4 py-3 transition hover:bg-surface-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-500 [&::-webkit-details-marker]:hidden sm:grid-cols-[minmax(180px,1.5fr)_minmax(150px,1fr)_130px_minmax(145px,auto)_90px_28px]">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-lg font-semibold text-surface-950">{request.item.item_name || 'Product'}</h2>
-            <span className="rounded-full bg-surface-100 px-2 py-0.5 text-xs font-medium text-surface-600">
-              {request.item.category}{request.item.size ? ` · ${request.item.size}` : ''}
-            </span>
-            <span className="text-xs text-surface-500">Piece: {request.item.piece}</span>
-          </div>
-          <p className="mt-1 text-sm text-surface-500">
-            Buyer: <span className="font-medium text-surface-800">{request.buyer.name || request.buyer.email}</span>
+          <p className="truncate text-sm font-semibold text-surface-950">{request.item.item_name || 'Product'}</p>
+          <p className="mt-0.5 truncate text-xs text-surface-500">
+            Serial / Piece: <span className="font-medium text-surface-700">{request.item.piece}</span>
+            {request.item.category ? ` · ${request.item.category}` : ''}
           </p>
         </div>
 
-        <div className="flex flex-col items-start gap-2 lg:items-end">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-surface-800">{request.buyer.name || request.buyer.email}</p>
+          <p className="mt-0.5 truncate text-xs text-surface-500">{request.buyer.email}</p>
+        </div>
+
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-surface-400 sm:hidden">Buying date</p>
+          <p className="text-sm font-medium text-surface-700">{formatDate(request.dealer_bill?.bill_date)}</p>
+        </div>
+
+        <div>
           {flagged ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-danger-400 bg-danger-100 px-3 py-1 text-sm font-semibold text-danger-700">
-              <AlertTriangle className="h-4 w-4" />
-              Old stock — {request.days_old} days ({request.months_old} months)
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-danger-400 bg-danger-100 px-2.5 py-1 text-xs font-semibold text-danger-700">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              Old stock · {request.days_old} days
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-surface-200 bg-surface-50 px-3 py-1 text-sm font-medium text-surface-600">
-              <Clock className="h-4 w-4" />
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-surface-600">
+              <Clock className="h-3.5 w-3.5" />
               {request.days_old != null ? `${request.days_old} days old` : 'Age unknown'}
             </span>
           )}
-          <span className="text-xs capitalize text-surface-500">Status: {request.status}</span>
         </div>
-      </div>
 
-      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${
+          request.status === 'pending'
+            ? 'bg-warning-100 text-warning-600'
+            : request.status === 'approved'
+              ? 'bg-success-100 text-success-700'
+              : 'bg-danger-100 text-danger-700'
+        }`}>
+          {request.status}
+        </span>
+
+        <ChevronDown className="h-5 w-5 text-surface-400 transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
+      </summary>
+
+      <div className="border-t border-surface-200 bg-white px-4 pb-5 pt-4">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         <DetailBlock
           title="Buyer Details"
           rows={[
@@ -135,25 +152,26 @@ function RequestCard({ request, onApprove, onDecline, acting }) {
             ]}
           />
         )}
-      </div>
-
-      {isPending && (
-        <div className="mt-5 flex flex-wrap gap-2">
-          <button onClick={() => onApprove(request)} disabled={acting} className="btn-primary">
-            {acting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-            Approve
-          </button>
-          <button
-            onClick={() => onDecline(request)}
-            disabled={acting}
-            className="flex items-center gap-2 rounded-lg border border-danger-200 bg-danger-50 px-4 py-2 text-sm font-medium text-danger-700 hover:bg-danger-100 disabled:opacity-50"
-          >
-            <X className="h-4 w-4" />
-            Decline
-          </button>
         </div>
-      )}
-    </article>
+
+        {isPending && (
+          <div className="mt-5 flex flex-wrap gap-2 border-t border-surface-100 pt-4">
+            <button onClick={() => onApprove(request)} disabled={acting} className="btn-primary">
+              {acting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              Approve
+            </button>
+            <button
+              onClick={() => onDecline(request)}
+              disabled={acting}
+              className="flex items-center gap-2 rounded-lg border border-danger-200 bg-danger-50 px-4 py-2 text-sm font-medium text-danger-700 hover:bg-danger-100 disabled:opacity-50"
+            >
+              <X className="h-4 w-4" />
+              Decline
+            </button>
+          </div>
+        )}
+      </div>
+    </details>
   )
 }
 

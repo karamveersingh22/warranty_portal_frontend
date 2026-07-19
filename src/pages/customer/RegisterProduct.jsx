@@ -137,7 +137,7 @@ export default function RegisterProduct() {
               <input type="date" value={dealerBillDate} max={today} onChange={(event) => setDealerBillDate(event.target.value)} className="input" required disabled={loadingLookup || registering} />
             </label>
           </div>
-          <p className="mt-3 text-xs text-surface-500">Enter the dealer invoice number and the date the customer bought the mattress. The buying date starts the warranty and cannot be later than today.</p>
+          <p className="mt-3 text-xs text-surface-500">Enter the dealer bill number and the date you bought the mattress. The buying date starts the warranty and cannot be later than today.</p>
           <div className="mt-4">
             <button type="submit" disabled={loadingLookup || registering || !cleanPiece || !hasDealerBill} className="btn-primary sm:min-w-32">
               {loadingLookup ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
