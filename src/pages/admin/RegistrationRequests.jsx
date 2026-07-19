@@ -38,7 +38,7 @@ function RequestCard({ request, onApprove, onDecline, acting }) {
   return (
     <article
       className={`rounded-lg border bg-white p-5 shadow-sm ${
-        flagged ? 'border-danger-300 ring-1 ring-danger-200' : 'border-surface-200'
+        flagged ? 'border-l-4 border-danger-500 bg-danger-50 ring-2 ring-danger-200 shadow-md' : 'border-surface-200'
       }`}
     >
       <div className="flex flex-col gap-3 border-b border-surface-100 pb-4 lg:flex-row lg:items-start lg:justify-between">
@@ -57,9 +57,9 @@ function RequestCard({ request, onApprove, onDecline, acting }) {
 
         <div className="flex flex-col items-start gap-2 lg:items-end">
           {flagged ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-danger-200 bg-danger-50 px-3 py-1 text-sm font-semibold text-danger-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-danger-400 bg-danger-100 px-3 py-1 text-sm font-semibold text-danger-700">
               <AlertTriangle className="h-4 w-4" />
-              Old stock — {request.months_old} months old
+              Old stock — {request.days_old} days ({request.months_old} months)
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-surface-200 bg-surface-50 px-3 py-1 text-sm font-medium text-surface-600">
@@ -113,9 +113,8 @@ function RequestCard({ request, onApprove, onDecline, acting }) {
           title="Dealer Bill Details"
           rows={[
             ['Dealer Bill No.', request.dealer_bill?.bill_number],
-            ['Dealer Bill Date', formatDate(request.dealer_bill?.bill_date)],
+            ['Customer Buying Date', formatDate(request.dealer_bill?.bill_date)],
             ['Registration Date', formatDate(request.dealer_bill?.registration_date)],
-            ['Product Age', request.days_old != null ? `${request.days_old} days (~${request.months_old} months)` : 'N/A'],
           ]}
         />
         <DetailBlock
@@ -123,6 +122,7 @@ function RequestCard({ request, onApprove, onDecline, acting }) {
           rows={[
             ['Company Bill No.', request.company_dispatch?.bill_number],
             ['Company Bill Date', formatDate(request.company_dispatch?.bill_date)],
+            ['Product Age at Registration', request.days_old != null ? `${request.days_old} days (~${request.months_old} months)` : 'N/A'],
           ]}
         />
         {request.status !== 'pending' && (
@@ -256,7 +256,7 @@ export default function RegistrationRequests() {
             Old-stock flag threshold
           </div>
           <p className="mt-1 text-xs text-surface-500">
-            Flag a request if this many days have passed between the dealer bill date and registration request.
+            Flag a request when the gap between the company bill date and customer buying date reaches this limit.
           </p>
           <div className="mt-3 flex items-center gap-2">
             <input

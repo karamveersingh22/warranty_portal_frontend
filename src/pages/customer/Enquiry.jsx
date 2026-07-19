@@ -74,7 +74,7 @@ export default function Enquiry() {
   const handleSubmit = async (event) => {
     event.preventDefault()
     if (!form.piece.trim() || !form.description.trim()) {
-      toast.error('Enter the piece number and describe the issue')
+      toast.error('Enter the serial number / piece number and describe the issue')
       return
     }
 
@@ -136,13 +136,13 @@ export default function Enquiry() {
           <div className="rounded-lg border border-surface-200 bg-white p-5 shadow-sm">
             <div className="space-y-4">
               <label className="block">
-                <span className="mb-2 block text-sm font-medium text-surface-800">Piece Number</span>
+                <span className="mb-2 block text-sm font-medium text-surface-800">Serial Number / Piece Number</span>
                 <input
                   list="customer-product-pieces"
                   value={form.piece}
                   onChange={(event) => setForm((current) => ({ ...current, piece: event.target.value }))}
                   className="input"
-                  placeholder="Enter the mattress piece number"
+                  placeholder="Enter the mattress serial number / piece number"
                   required
                 />
                 <datalist id="customer-product-pieces">
@@ -203,7 +203,7 @@ export default function Enquiry() {
               </div>
             ) : (
               <div className="mt-4 rounded-lg bg-surface-50 p-4">
-                <p className="text-sm text-surface-600">Enter a piece number to raise an enquiry. Registered products also appear as suggestions.</p>
+                <p className="text-sm text-surface-600">Enter a serial number / piece number to raise an enquiry. Registered products also appear as suggestions.</p>
               </div>
             )}
           </aside>

@@ -25,7 +25,8 @@ export default function RegisterProduct() {
   const { refreshUser } = useAuth()
   const [piece, setPiece] = useState('')
   const [dealerBillNumber, setDealerBillNumber] = useState('')
-  const dealerBillDate = indiaToday()
+  const today = indiaToday()
+  const [dealerBillDate, setDealerBillDate] = useState(today)
   const [lookup, setLookup] = useState(null)
   const [loadingLookup, setLoadingLookup] = useState(false)
   const [registering, setRegistering] = useState(false)
@@ -42,7 +43,7 @@ export default function RegisterProduct() {
   const handleLookup = async (event) => {
     event.preventDefault()
     if (!cleanPiece) {
-      toast.error('Enter a piece number')
+      toast.error('Enter a serial number / piece number')
       return
     }
     if (!dealerBillNumber.trim()) {
@@ -117,13 +118,13 @@ export default function RegisterProduct() {
         <form onSubmit={handleLookup} className="rounded-lg border border-surface-200 bg-white p-5 shadow-sm">
           <div className="grid gap-4 md:grid-cols-3">
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-surface-800">Piece number</span>
+              <span className="mb-2 block text-sm font-medium text-surface-800">Serial Number / Piece Number</span>
             <input
               id="piece"
               value={piece}
               onChange={(event) => setPiece(event.target.value)}
               className="input"
-              placeholder="Enter piece number"
+              placeholder="Enter serial number / piece number"
               disabled={loadingLookup || registering}
             />
             </label>
@@ -132,11 +133,11 @@ export default function RegisterProduct() {
               <input value={dealerBillNumber} onChange={(event) => setDealerBillNumber(event.target.value)} className="input" placeholder="Bill from dealer" disabled={loadingLookup || registering} />
             </label>
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-surface-800">Dealer bill date</span>
-              <input type="date" value={dealerBillDate} className="input cursor-not-allowed bg-surface-100" readOnly aria-readonly="true" />
+              <span className="mb-2 block text-sm font-medium text-surface-800">Customer Buying Date</span>
+              <input type="date" value={dealerBillDate} max={today} onChange={(event) => setDealerBillDate(event.target.value)} className="input" required disabled={loadingLookup || registering} />
             </label>
           </div>
-          <p className="mt-3 text-xs text-surface-500">Enter the dealer invoice number. The bill date and warranty start date are fixed to today and cannot be changed.</p>
+          <p className="mt-3 text-xs text-surface-500">Enter the dealer invoice number and the date the customer bought the mattress. The buying date starts the warranty and cannot be later than today.</p>
           <div className="mt-4">
             <button type="submit" disabled={loadingLookup || registering || !cleanPiece || !hasDealerBill} className="btn-primary sm:min-w-32">
               {loadingLookup ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
@@ -198,7 +199,7 @@ export default function RegisterProduct() {
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Info label="Item Code" value={product.i_code} />
             <Info label="Dealer Bill Number" value={dealerBillNumber} />
-            <Info label="Dealer Bill Date" value={dealerBillDate ? new Date(`${dealerBillDate}T00:00:00`).toLocaleDateString('en-IN') : null} />
+            <Info label="Customer Buying Date" value={dealerBillDate ? new Date(`${dealerBillDate}T00:00:00`).toLocaleDateString('en-IN') : null} />
             <Info label="Dealer" value={lookup.dealer_information?.name} />
           </div>
         </div>
